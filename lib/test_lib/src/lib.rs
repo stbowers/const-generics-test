@@ -1,28 +1,27 @@
+#![allow(incomplete_features)]
+#![allow(deprecated)]
+
 #![feature(const_generics)]
 
-use std::ops::{Add, Mul};
-
-pub struct Matrix<T, const M: usize, const N: usize> {
-    data: Vector<T, {N*M}>,
+pub struct MyStruct<const N: usize> {
+    _data: [usize; N],
 }
 
-pub struct Vector<T, const N: usize> {
-    data: [T; N],
-}
+impl<const N: usize> MyStruct<N> {
+    pub fn new() -> MyStruct<N> {
+        return MyStruct {
+            _data: unsafe { std::mem::uninitialized() },
+        };
+    }
 
-impl<T: Copy + Add<Output = T> + Mul<Output = T>> Mul<&Vector<T, 3>> for &Matrix<T, 3, 3> {
-    type Output = Vector<T, 3>;
-
-    fn mul(self, rhs: & Vector<T, 3>) -> Vector<T, 3> {
-        // The actual calculation doesn't matter
-        return unsafe { std::mem::uninitialized() }
+    pub fn test_generic(&self) {
+        println!("There are {} elements!", N);
     }
 }
 
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
+impl MyStruct<3> {
+    pub fn test_three(&self) {
+        println!("There are 3 elements! Do something cool with this special case!");
     }
 }
+
